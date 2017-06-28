@@ -1,5 +1,8 @@
 <?php 
+include('inc/header.php');
 include('inc/data.php');
+include('inc/functions.php');
+
 $pageTitle = 'Full Catalog';
 $section = null;
 
@@ -16,21 +19,22 @@ if(isset($_GET['cat'])) {
 	}
 }
 
-include("inc/header.php"); ?>
+?>
 
 <div class="section catalog page">
 	<div class="wrapper">
-		<h1><?php echo $pageTitle ?></h1>
+		<h1><?php
+		if($section != NULL) {
+			echo "<a href='catalog.php'>Full Catalog</a> &gt; ";
+		}
+		echo $pageTitle ?></h1>
 		<ul class="items">
-			<?php 
-			foreach($catalog AS $item) {
-				echo "<li><a href='#'><img src='"
-				. $item["img"] . "' alt='"
-				. $item["title"]. "'/ >"
-				. "<p>View Details</p>"
-				. "</a></li>";
+			<?php
+			$categories = array_category($catalog, $section);
+			foreach($categories AS $id) {
+				echo get_item_html($id, $catalog[$id]);
 			}
-			?>
+			?>	
 		</ul>
 	</div>
 </div>
