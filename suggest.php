@@ -14,18 +14,37 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 		exit;
 	}
 
-	echo "<pre>";
+	require('inc/phpmailer/class.phpmailer.php');
+	$mail = new PHPMailer;
+	if(!$mail->ValidateAddress($email)) {
+		echo 'Invalid Email Address';
+		exit;
+	}
+
+	
 	$email_body = '';
 	$email_body .= 'Name ' . $name . "\n";
 	$email_body .= 'Email ' . $email . "\n";
 	$email_body .= 'Details ' . $details . "\n";
-	echo $email_body;
-	echo "</pre>";
+	
+	$mail->setFrom($email, $name);
+	$mail->addAddress('sagiv.lapkin@gmail.com', 'Sagiv Lapkin');     // Add a recipient
 
+	$mail->isHTML(false);                                  // Set email format to HTML
 
-	// To do: Send email
-	header("location:suggest.php?status=thanks");
-}
+	$mail->Subject = 'Personal Media Library Suggestion from ' . $name;
+	$mail->Body    = $email_body;
+
+	if(!$mail->send()) {
+	    echo 'Message could not be sent.';
+	    echo 'Mailer Error: ' . $mail->ErrorInfo;
+	    exit;
+	} else {
+	    echo 'Message has been sent';
+	}
+
+		header("location:suggest.php?status=thanks");
+	}
 
 $pageTitle = 'Suggest a Media Item';
 $section = 'suggest';
